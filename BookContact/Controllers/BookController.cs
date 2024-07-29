@@ -17,17 +17,21 @@ namespace BookContact.Controllers
 
         static BookController()
         {
-            client = new HttpClient();
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+                //cookies are manually set in RequestHeader
+                UseCookies = false
+            };
+            client = new HttpClient(handler);
             client.BaseAddress = new Uri("https://localhost:44324/api/");
         }
         // GET: Book/List
         public ActionResult List()
         {
-
-            string url = "booksdata/listbooks";
-
+            //curl curl "https://localhost:44324/api/bookdata/listbooks"
+            string url = "bookdata/listbooks";
             HttpResponseMessage response = client.GetAsync(url).Result;
-
             IEnumerable<BookDto> books = response.Content.ReadAsAsync<IEnumerable<BookDto>>().Result;
 
             return View(books);
@@ -37,7 +41,7 @@ namespace BookContact.Controllers
         public ActionResult Details(int id)
         {
 
-            string url = "booksdata/findbook/" + id;
+            string url = "bookdata/findbook/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
@@ -55,7 +59,7 @@ namespace BookContact.Controllers
         // GET: Book/New
         public ActionResult New()
         {
-            string url = "authorsdata/listauthors";
+            string url = "authordata/listauthors";
             HttpResponseMessage response = client.GetAsync(url).Result;
             IEnumerable<AuthorDto> AuthorOptions = response.Content.ReadAsAsync<IEnumerable<AuthorDto>>().Result;
 
@@ -66,7 +70,7 @@ namespace BookContact.Controllers
         [HttpPost]
         public ActionResult Create(Book book)
         {
-            string url = "booksdata/addbook";
+            string url = "bookdata/addbook";
             string jsonpayload = jss.Serialize(book);
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
@@ -84,7 +88,7 @@ namespace BookContact.Controllers
         // GET: Book/Edit/5
         public ActionResult Edit(int id)
         {
-            string url = "booksdata/findbook/" + id;
+            string url = "bookdata/findbook/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
 
@@ -95,7 +99,7 @@ namespace BookContact.Controllers
         [HttpPost]
         public ActionResult Update(int id, Book book)
         {
-            string url = "booksdata/updatebook/" + id;
+            string url = "bookdata/updatebook/" + id;
             string jsonpayload = jss.Serialize(book);
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
@@ -116,7 +120,7 @@ namespace BookContact.Controllers
         // GET: Book/Delete/5
         public ActionResult ConfirmDelete(int id)
         {
-            string url = "booksdata/findbook/" + id;
+            string url = "bookdata/findbook/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
 
@@ -127,7 +131,7 @@ namespace BookContact.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            string url = "booksdata/deletebook/" + id;
+            string url = "bookdata/deletebook/" + id;
             HttpContent content = new StringContent("");
             content.Headers.ContentType.MediaType = "application/json";
             HttpResponseMessage response = client.PostAsync(url, content).Result;

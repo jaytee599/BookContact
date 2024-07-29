@@ -48,11 +48,15 @@ textarea {
 
     .hero:before {
         content: "";
+        /* Fallback background color */
+        background: var(--background-color);
+        /* Modern fallback using color-mix, only in supporting browsers */
         background: color-mix(in srgb, var(--background-color), transparent 50%);
         position: absolute;
         inset: 0;
         z-index: 2;
     }
+
 
     .hero .container {
         position: relative;

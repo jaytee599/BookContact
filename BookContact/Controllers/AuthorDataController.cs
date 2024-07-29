@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using BookContact.Models;
+using System.Diagnostics;
 
 namespace BookContact.Controllers
 {
@@ -16,9 +17,10 @@ namespace BookContact.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/AuthorsData/ListAuthors
+        // GET: api/AuthorData/ListAuthors
         [HttpGet]
-        public IEnumerable<AuthorDto> ListAuthors()
+        [ResponseType(typeof(AuthorDto))]
+        public IHttpActionResult ListAuthors()
         {
             List<Author> Authors = db.Authors.ToList();
             List<AuthorDto> AuthorDtos = new List<AuthorDto>();
@@ -29,11 +31,11 @@ namespace BookContact.Controllers
                 AuthorName = a.AuthorName,
                 Biography = a.Biography,
             }));
-            return AuthorDtos;
+            return Ok(AuthorDtos);
         }
 
-        // GET: api/AuthorsData/FindAuthor/5
-        [ResponseType(typeof(Author))]
+        // GET: api/AuthorData/FindAuthor/5
+        [ResponseType(typeof(AuthorDto))]
         [HttpGet]
         public IHttpActionResult FindAuthor(int id)
         {
@@ -52,18 +54,21 @@ namespace BookContact.Controllers
             return Ok(AuthorDto);
         }
 
-        // POST: api/AuthorsData/UpdateAuthor/5
+        // POST: api/AuthorData/UpdateAuthor/5
         [ResponseType(typeof(void))]
         [HttpPost]
         public IHttpActionResult UpdateAuthor(int id, Author author)
         {
+            Debug.WriteLine("I have reached the updated author");
             if (!ModelState.IsValid)
             {
+                Debug.WriteLine("invalid model state");
                 return BadRequest(ModelState);
             }
 
             if (id != author.AuthorId)
             {
+                Debug.WriteLine("wrong id");
                 return BadRequest();
             }
 
@@ -77,6 +82,7 @@ namespace BookContact.Controllers
             {
                 if (!AuthorExists(id))
                 {
+                    Debug.WriteLine("Author not available");
                     return NotFound();
                 }
                 else
@@ -84,11 +90,11 @@ namespace BookContact.Controllers
                     throw;
                 }
             }
-
+            Debug.WriteLine("Error no sabi");
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/AuthorsData/AddAuthor
+        // POST: api/AuthorData/AddAuthor
         [ResponseType(typeof(Author))]
         [HttpPost]
         public IHttpActionResult AddAuthor(Author author)
@@ -104,7 +110,7 @@ namespace BookContact.Controllers
             return CreatedAtRoute("DefaultApi", new { id = author.AuthorId }, author);
         }
 
-        // POST: api/AuthorsData/DeleteAuthor/5
+        // POST: api/AuthorData/DeleteAuthor/5
         [ResponseType(typeof(Author))]
         [HttpPost]
         public IHttpActionResult DeleteAuthor(int id)

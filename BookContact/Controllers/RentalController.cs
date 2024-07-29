@@ -17,14 +17,21 @@ namespace BookContact.Controllers
 
         static RentalController()
         {
-            client = new HttpClient();
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false,
+                //cookies are manually set in RequestHeader
+                UseCookies = false
+            };
+            client = new HttpClient(handler);
             client.BaseAddress = new Uri("https://localhost:44324/api/");
         }
 
         // GET: Rental/List
         public ActionResult List()
         {
-            string url = "rentalsdata/listrentals";
+            //curl curl "https://localhost:44324/api/rentaldata/listrentals"
+            string url = "rentaldata/listrentals";
             HttpResponseMessage response = client.GetAsync(url).Result;
             IEnumerable<RentalDto> rentals = response.Content.ReadAsAsync<IEnumerable<RentalDto>>().Result;
 
@@ -34,7 +41,7 @@ namespace BookContact.Controllers
         // GET: Rental/Details/5
         public ActionResult Details(int id)
         {
-            string url = "rentalsdata/findrental/" + id;
+            string url = "rentaldata/findrental/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             RentalDto selectedRental = response.Content.ReadAsAsync<RentalDto>().Result;
 
@@ -49,7 +56,7 @@ namespace BookContact.Controllers
         // GET: Rental/New
         public ActionResult New()
         {
-            string url = "booksdata/listbooks";
+            string url = "bookdata/listbooks";
             HttpResponseMessage response = client.GetAsync(url).Result;
             IEnumerable<BookDto> BookOptions = response.Content.ReadAsAsync<IEnumerable<BookDto>>().Result;
 
@@ -60,7 +67,7 @@ namespace BookContact.Controllers
         [HttpPost]
         public ActionResult Create(Rental rental)
         {
-            string url = "rentalsdata/addrental";
+            string url = "rentaldata/addrental";
             string jsonpayload = jss.Serialize(rental);
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
@@ -78,7 +85,7 @@ namespace BookContact.Controllers
         // GET: Rental/Edit/5
         public ActionResult Edit(int id)
         {
-            string url = "rentalsdata/findrental/" + id;
+            string url = "rentaldata/findrental/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             RentalDto selectedRental = response.Content.ReadAsAsync<RentalDto>().Result;
 
@@ -89,7 +96,7 @@ namespace BookContact.Controllers
         [HttpPost]
         public ActionResult Update(int id, Rental rental)
         {
-            string url = "rentalsdata/updaterental/" + id;
+            string url = "rentaldata/updaterental/" + id;
             string jsonpayload = jss.Serialize(rental);
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
@@ -110,7 +117,7 @@ namespace BookContact.Controllers
         // GET: Rental/Delete/5
         public ActionResult ConfirmDelete(int id)
         {
-            string url = "rentalsdata/findrental/" + id;
+            string url = "rentaldata/findrental/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             RentalDto selectedRental = response.Content.ReadAsAsync<RentalDto>().Result;
 
@@ -121,7 +128,7 @@ namespace BookContact.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            string url = "rentalsdata/deleterental/" + id;
+            string url = "rentaldata/deleterental/" + id;
             HttpContent content = new StringContent("");
             content.Headers.ContentType.MediaType = "application/json";
             HttpResponseMessage response = client.PostAsync(url, content).Result;

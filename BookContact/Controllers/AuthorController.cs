@@ -24,13 +24,14 @@ namespace BookContact.Controllers
                 UseCookies = false
             };
 
-            client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44324/api/authorsdata/");
+            client = new HttpClient(handler);
+            client.BaseAddress = new Uri("https://localhost:44324/api/authordata/");
         }
 
         // GET: Author/List
         public ActionResult List()
         {
+            //curl "https://localhost:44324/api/authordata/listauthors"
             string url = "listauthors";
             HttpResponseMessage response = client.GetAsync(url).Result;
             IEnumerable<AuthorDto> authors = response.Content.ReadAsAsync<IEnumerable<AuthorDto>>().Result;

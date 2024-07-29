@@ -16,9 +16,10 @@ namespace BookContact.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/RentalsData/ListRentals
+        // GET: api/RentalData/ListRentals
         [HttpGet]
-        public IEnumerable<RentalDto> ListRentals()
+        [ResponseType(typeof(RentalDto))]
+        public IHttpActionResult ListRentals()
         {
             List<Rental> Rentals = db.Rentals.ToList();
             List<RentalDto> RentalDtos = new List<RentalDto>();
@@ -31,11 +32,11 @@ namespace BookContact.Controllers
                 RentalAvailable = a.RentalAvailable,
                 Title = a.Book.Title,
             }));
-            return RentalDtos;
+            return Ok(RentalDtos);
         }
 
-        // GET: api/RentalsData/FindRental/5
-        [ResponseType(typeof(Rental))]
+        // GET: api/RentalData/FindRental/5
+        [ResponseType(typeof(RentalDto))]
         [HttpGet]
         public IHttpActionResult FindRental(int id)
         {
@@ -57,9 +58,10 @@ namespace BookContact.Controllers
             return Ok(RentalDto);
         }
 
-        // POST: api/RentalsData/UpdateRental/5
+        // POST: api/RentalData/UpdateRental/5
         [ResponseType(typeof(void))]
         [HttpPost]
+        [Authorize]
         public IHttpActionResult UpdateRental(int id, Rental rental)
         {
             if (!ModelState.IsValid)
@@ -93,7 +95,7 @@ namespace BookContact.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/RentalsData/AddRental
+        // POST: api/RentalData/AddRental
         [ResponseType(typeof(Rental))]
         [HttpPost]
         public IHttpActionResult AddRental(Rental rental)
@@ -109,7 +111,7 @@ namespace BookContact.Controllers
             return CreatedAtRoute("DefaultApi", new { id = rental.RentalId }, rental);
         }
 
-        // POST: api/RentalsData/DeleteRental/5
+        // POST: api/RentalData/DeleteRental/5
         [ResponseType(typeof(Rental))]
         [HttpPost]
         public IHttpActionResult DeleteRental(int id)

@@ -26,15 +26,13 @@ namespace BookContact.Models
         {
         }
 
+        public DbSet<Book> Books { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
+        public DbSet<Author> Authors { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
-
-        public System.Data.Entity.DbSet<BookContact.Models.Author> Authors { get; set; }
-
-        public System.Data.Entity.DbSet<BookContact.Models.Book> Books { get; set; }
-
-        public System.Data.Entity.DbSet<BookContact.Models.Rental> Rentals { get; set; }
     }
 }

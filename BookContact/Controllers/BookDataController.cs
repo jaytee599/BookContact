@@ -17,9 +17,10 @@ namespace BookContact.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: api/BooksData/ListBooks
+        // GET: api/BookData/ListBooks
         [HttpGet]
-        public IEnumerable<BookDto> ListBooks()
+        [ResponseType(typeof(BookDto))]
+        public IHttpActionResult ListBooks()
         {
             List<Book> Books = db.Books.ToList();
             List<BookDto> BookDtos = new List<BookDto>();
@@ -32,11 +33,11 @@ namespace BookContact.Controllers
                 BorrowingDate = a.BorrowingDate,
                 AuthorName = a.Author.AuthorName,
             }));
-            return BookDtos;
+            return Ok(BookDtos);
         }
 
-        // GET: api/BooksData/FindBook/5
-        [ResponseType(typeof(Book))]
+        // GET: api/BookData/FindBook/5
+        [ResponseType(typeof(BookDto))]
         [HttpGet]
         public IHttpActionResult FindBook(int id)
         {
@@ -58,9 +59,10 @@ namespace BookContact.Controllers
             return Ok(BookDto);
         }
 
-        // POST: api/BooksData/UpdateBook/5
+        // POST: api/BookData/UpdateBook/5
         [ResponseType(typeof(void))]
         [HttpPost]
+        [Authorize]
         public IHttpActionResult UpdateBook(int id, Book book)
         {
             Debug.WriteLine("Update Book Successful");
@@ -99,7 +101,7 @@ namespace BookContact.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/BooksData/AddBook
+        // POST: api/BookData/AddBook
         [ResponseType(typeof(Book))]
         public IHttpActionResult AddBook(Book book)
         {
@@ -114,7 +116,7 @@ namespace BookContact.Controllers
             return CreatedAtRoute("DefaultApi", new { id = book.BookId }, book);
         }
 
-        // POST: api/BooksData/DeleteBook/5
+        // POST: api/BookData/DeleteBook/5
         [ResponseType(typeof(Book))]
         [HttpPost]
         public IHttpActionResult DeleteBook(int id)
