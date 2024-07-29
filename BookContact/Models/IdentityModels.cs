@@ -31,7 +31,6 @@ namespace BookContact.Models
         public DbSet<Book> Books { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<Author> Authors { get; set; }
-
         public DbSet<Contact> Contacts { get; set; }
 
         public static ApplicationDbContext Create()

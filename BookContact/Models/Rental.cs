@@ -17,6 +17,8 @@ namespace BookContact.Models
         public DateTime DueDate { get; set; }
         public bool RentalAvailable { get; set; }
 
+        public virtual ApplicationUser User { get; set; }
+
         [ForeignKey("Book")]
         public int BookId { get; set; }
         public virtual Book Book { get; set; }

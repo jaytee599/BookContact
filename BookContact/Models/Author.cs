@@ -16,6 +16,7 @@ namespace BookContact.Models
 
         public string Biography { get; set; }
         public ICollection<Book> Books { get; set; }
+        public virtual ICollection<Contact> Contacts { get; set; }
     }
 
     public class AuthorDto
