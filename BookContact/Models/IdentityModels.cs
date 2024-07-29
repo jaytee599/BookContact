@@ -26,13 +26,6 @@ namespace BookContact.Models
         {
         }
 
-        //Add an animal entity to our system
-        public DbSet<Animal> Animals { get; set; }
-
-        public DbSet<Species> Species { get; set; }
-
-        public DbSet<Keeper> Keepers { get; set; }
-
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

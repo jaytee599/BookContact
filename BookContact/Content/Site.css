@@ -23,8 +23,6 @@ textarea {
     max-width: 280px;
 }
 
-
-
 .hero {
     --default-color: #ffffff;
     --background-color: #000000;
@@ -106,7 +104,7 @@ header.masthead {
         padding-bottom: 12rem;
     }
 
-    header.masthead h1, header.masthead .h1 {
-        font-size: 3rem;
-    }
+        header.masthead h1, header.masthead .h1 {
+            font-size: 3rem;
+        }
 }
