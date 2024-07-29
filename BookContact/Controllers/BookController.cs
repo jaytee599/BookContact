@@ -1,4 +1,5 @@
 ﻿using BookContact.Models;
+using BookContact.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +27,27 @@ namespace BookContact.Controllers
             client = new HttpClient(handler);
             client.BaseAddress = new Uri("https://localhost:44324/api/");
         }
+
+        private void GetApplicationCookie()
+        {
+            string token = "";
+            //HTTP client is set up to be reused, otherwise it will exhaust server resources.
+            //This is a bit dangerous because a previously authenticated cookie could be cached for
+            //a follow-up request from someone else. Reset cookies in HTTP client before grabbing a new one.
+            client.DefaultRequestHeaders.Remove("Cookie");
+            if (!User.Identity.IsAuthenticated) return;
+
+            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies.Get(".AspNet.ApplicationCookie");
+            if (cookie != null) token = cookie.Value;
+
+            //collect token as it is submitted to the controller
+            //use it to pass along to the WebAPI.
+            Debug.WriteLine("Token Submitted is : " + token);
+            if (token != "") client.DefaultRequestHeaders.Add("Cookie", ".AspNet.ApplicationCookie=" + token);
+
+            return;
+        }
+
         // GET: Book/List
         public ActionResult List()
         {
@@ -88,17 +110,27 @@ namespace BookContact.Controllers
         // GET: Book/Edit/5
         public ActionResult Edit(int id)
         {
+            UpdateBook ViewModel = new UpdateBook();
+
             string url = "bookdata/findbook/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
+            ViewModel.SelectedBook = selectedBook;
 
-            return View(selectedBook);
+            url = "authordata/listauthors/";
+            response = client.GetAsync(url).Result;
+            IEnumerable<AuthorDto> AuthorOptions = response.Content.ReadAsAsync<IEnumerable<AuthorDto>>().Result;
+            ViewModel.AuthorOptions = AuthorOptions;
+
+            return View(ViewModel);
         }
 
         // POST: Book/Update/5
         [HttpPost]
+        [Authorize]
         public ActionResult Update(int id, Book book)
         {
+            GetApplicationCookie();
             string url = "bookdata/updatebook/" + id;
             string jsonpayload = jss.Serialize(book);
             HttpContent content = new StringContent(jsonpayload);
@@ -111,7 +143,7 @@ namespace BookContact.Controllers
             else
             {
                 var errorMessage = response.Content.ReadAsStringAsync().Result;
-                Debug.WriteLine($"DELETE request failed with status code: {response.StatusCode}");
+                Debug.WriteLine($"Update request failed with status code: {response.StatusCode}");
                 Debug.WriteLine($"Error message: {errorMessage}");
                 return RedirectToAction("Error");
             }
