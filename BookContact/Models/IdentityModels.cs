@@ -10,6 +10,8 @@ namespace BookContact.Models
     public class ApplicationUser : IdentityUser
     {
         public string FavoriteColor { get; set; }
+
+        public virtual ICollection<Contact> Contacts { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
