@@ -9,18 +9,47 @@ The first part of our BookContact system. This features the use of Code-First Mi
 - Check that the database is created using (View > SQL Server Object Explorer > MSSQLLocalDb > ..)
 - Run API commands through CURL to create new contacts/books/authors
 
-Get a List of Authors curl https://localhost:44324/api/authorsdata/listauthors
-Get a Single Author curl https://localhost:44324/api/authorsdata/findauthor/{id}
-Get a List of Books curl https://localhost:44324/api/booksdata/listbooks
-Get a Single Book curl https://localhost:44324/api/booksdata/findbook/{id}
-Get a List of Rentals curl https://localhost:44324/api/rentalsdata/listrentals
-Get a Single Rental curl https://localhost:44324/api/rentalsdata/findrental/{id}
-Add a new Author curl https://localhost:44324/api/authorsdata/addauthor
-Add a new Book curl https://localhost:44324/api/booksdata/addbook
-Add a new Rental curl https://localhost:44324/api/rentalsdata/addrental
-Delete an Author curl -d "" https://localhost:44324/api/authorsdata/deleteauthor/{id}
-Delete a Book curl -d "" https://localhost:44324/api/booksdata/deletebook/{id}
-Delete a Rental curl -d "" https://localhost:44324/api/rentalsdata/deleterental/{id}
-Update an Author curl -H https://localhost:44324/api/authorsdata/updateauthor/{id}
-Update a Book curl -H https://localhost:44324/api/booksdata/updatebook/{id}
-Update a Rental curl -H https://localhost:44324/api/rentalsdata/updaterental/{id}
+Get a List of Authors 
+curl https://localhost:44324/api/authordata/listauthors
+
+Get a Single Author 
+curl https://localhost:44324/api/authordata/findauthor/{id}
+
+Get a List of Books 
+curl https://localhost:44324/api/bookdata/listbooks
+
+Get a Single Book 
+curl https://localhost:44324/api/bookdata/findbook/{id}
+
+Get a List of Rentals 
+curl https://localhost:44324/api/rentaldata/listrentals
+
+Get a Single Rental 
+curl https://localhost:44324/api/rentaldata/findrental/{id}
+
+Add a new Author 
+curl https://localhost:44324/api/authordata/addauthor
+
+Add a new Book 
+curl https://localhost:44324/api/bookdata/addbook
+
+Add a new Rental 
+curl https://localhost:44324/api/rentaldata/addrental
+
+Delete an Author 
+curl -d "" https://localhost:44324/api/authordata/deleteauthor/{id}
+
+Delete a Book 
+curl -d "" https://localhost:44324/api/bookdata/deletebook/{id}
+
+Delete a Rental 
+curl -d "" https://localhost:44324/api/rentaldata/deleterental/{id}
+
+Update an Author 
+curl -H https://localhost:44324/api/authordata/updateauthor/{id}
+
+Update a Book 
+curl -H https://localhost:44324/api/bookdata/updatebook/{id}
+
+Update a Rental 
+curl -H https://localhost:44324/api/rentaldata/updaterental/{id}
