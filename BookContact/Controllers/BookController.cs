@@ -18,7 +18,7 @@ namespace BookContact.Controllers
         static BookController()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44383/api/");
+            client.BaseAddress = new Uri("https://localhost:44324/api/");
         }
         // GET: Book/List
         public ActionResult List()

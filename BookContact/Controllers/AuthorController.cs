@@ -25,7 +25,7 @@ namespace BookContact.Controllers
             };
 
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44383/api/authorsdata/");
+            client.BaseAddress = new Uri("https://localhost:44324/api/authorsdata/");
         }
 
         // GET: Author/List
