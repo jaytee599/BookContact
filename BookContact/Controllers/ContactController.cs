@@ -1,5 +1,4 @@
 ﻿using BookContact.Models;
-using BookContact.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,12 +10,12 @@ using System.Web.Script.Serialization;
 
 namespace BookContact.Controllers
 {
-    public class BookController : Controller
+    public class ContactController : Controller
     {
         private static readonly HttpClient client;
         private JavaScriptSerializer jss = new JavaScriptSerializer();
 
-        static BookController()
+        static ContactController()
         {
             HttpClientHandler handler = new HttpClientHandler()
             {
@@ -28,49 +27,24 @@ namespace BookContact.Controllers
             client.BaseAddress = new Uri("https://localhost:44324/api/");
         }
 
-        private void GetApplicationCookie()
-        {
-            string token = "";
-            //HTTP client is set up to be reused, otherwise it will exhaust server resources.
-            //This is a bit dangerous because a previously authenticated cookie could be cached for
-            //a follow-up request from someone else. Reset cookies in HTTP client before grabbing a new one.
-            client.DefaultRequestHeaders.Remove("Cookie");
-            if (!User.Identity.IsAuthenticated) return;
-
-            HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies.Get(".AspNet.ApplicationCookie");
-            if (cookie != null) token = cookie.Value;
-
-            //collect token as it is submitted to the controller
-            //use it to pass along to the WebAPI.
-            Debug.WriteLine("Token Submitted is : " + token);
-            if (token != "") client.DefaultRequestHeaders.Add("Cookie", ".AspNet.ApplicationCookie=" + token);
-
-            return;
-        }
-
-        // GET: Book/List
+        // GET: Contact/List
         public ActionResult List()
         {
-            //curl "https://localhost:44324/api/bookdata/listbooks"
-            string url = "bookdata/listbooks";
+            //curl "https://localhost:44324/api/contactdata/listcontacts"
+            string url = "contactdata/listcontacts";
             HttpResponseMessage response = client.GetAsync(url).Result;
-            IEnumerable<BookDto> books = response.Content.ReadAsAsync<IEnumerable<BookDto>>().Result;
-
-            return View(books);
+            IEnumerable<ContactDto> contacts = response.Content.ReadAsAsync<IEnumerable<ContactDto>>().Result;
+            return View(contacts);
         }
 
-        // GET: Book/Details/5
+        // GET: Contact/Details/5
         public ActionResult Details(int id)
         {
-
-            string url = "bookdata/findbook/" + id;
+            string url = "contactdata/findcontact/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
+            ContactDto selectedContact = response.Content.ReadAsAsync<ContactDto>().Result;
 
-            BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
-            Debug.WriteLine("Book received:");
-            Debug.WriteLine(selectedBook.Title);
-
-            return View(selectedBook);
+            return View(selectedContact);
         }
 
         public ActionResult Error()
@@ -78,22 +52,22 @@ namespace BookContact.Controllers
             return View();
         }
 
-        // GET: Book/New
+        // GET: Contact/Create
         public ActionResult New()
         {
-            string url = "authordata/listauthors";
+            string url = "contactdata/listcontacts";
             HttpResponseMessage response = client.GetAsync(url).Result;
-            IEnumerable<AuthorDto> AuthorOptions = response.Content.ReadAsAsync<IEnumerable<AuthorDto>>().Result;
+            IEnumerable<ContactDto> ContactOptions = response.Content.ReadAsAsync<IEnumerable<ContactDto>>().Result;
 
-            return View(AuthorOptions);
+            return View(ContactOptions);
         }
 
-        // POST: Book/Create
+        // POST: Contact/Create
         [HttpPost]
-        public ActionResult Create(Book book)
+        public ActionResult Create(Contact contact)
         {
-            string url = "bookdata/addbook";
-            string jsonpayload = jss.Serialize(book);
+            string url = "contactdata/addcontact";
+            string jsonpayload = jss.Serialize(contact);
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
             HttpResponseMessage response = client.PostAsync(url, content).Result;
@@ -107,35 +81,22 @@ namespace BookContact.Controllers
             }
         }
 
-        // GET: Book/Edit/5
+        // GET: Contact/Edit/5
         public ActionResult Edit(int id)
         {
-            UpdateBook ViewModel = new UpdateBook();
-
-            string url = "bookdata/findbook/" + id;
-            HttpResponseMessage response = client.GetAsync(url).Result;
-            BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
-            ViewModel.SelectedBook = selectedBook;
-
-            url = "authordata/listauthors/";
-            response = client.GetAsync(url).Result;
-            IEnumerable<AuthorDto> AuthorOptions = response.Content.ReadAsAsync<IEnumerable<AuthorDto>>().Result;
-            ViewModel.AuthorOptions = AuthorOptions;
-
-            return View(ViewModel);
+            return View();
         }
 
-        // POST: Book/Update/5
+        // POST: Contact/Update/5
         [HttpPost]
-        [Authorize]
-        public ActionResult Update(int id, Book book)
+        public ActionResult Update(int id, Contact contact)
         {
-            GetApplicationCookie();
-            string url = "bookdata/updatebook/" + id;
-            string jsonpayload = jss.Serialize(book);
+            string url = "contactdata/updatecontact/" + id;
+            string jsonpayload = jss.Serialize(contact);
             HttpContent content = new StringContent(jsonpayload);
             content.Headers.ContentType.MediaType = "application/json";
             HttpResponseMessage response = client.PostAsync(url, content).Result;
+
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("List");
@@ -149,24 +110,25 @@ namespace BookContact.Controllers
             }
         }
 
-        // GET: Book/Delete/5
+        // GET: Contact/Delete/5
         public ActionResult ConfirmDelete(int id)
         {
-            string url = "bookdata/findbook/" + id;
+            string url = "contactdata/findcontact/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
-            BookDto selectedBook = response.Content.ReadAsAsync<BookDto>().Result;
+            ContactDto selectedContact = response.Content.ReadAsAsync<ContactDto>().Result;
 
-            return View(selectedBook);
+            return View(selectedContact);
         }
 
-        // POST: Book/Delete/5
+        // POST: Contact/Delete/5
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            string url = "bookdata/deletebook/" + id;
+            string url = "contactdata/deletecontact/" + id;
             HttpContent content = new StringContent("");
             content.Headers.ContentType.MediaType = "application/json";
             HttpResponseMessage response = client.PostAsync(url, content).Result;
+
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("List");
