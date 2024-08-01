@@ -34,6 +34,7 @@ namespace BookContact.Models
         public string Address { get; set; }
         public string UserId { get; set; }
         public int AuthorId { get; set; }
+        public string AuthorName { get; set; }
         public int RentalId { get; set; }
     }
 }
